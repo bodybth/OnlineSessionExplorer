@@ -1,0 +1,105 @@
+name: Build & Release APK
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Setup Gradle 8.6
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: '8.6'
+
+      # Fix for the "AndroidX dependencies detected" error
+      - name: Configure AndroidX Properties
+        run: |
+          echo "android.useAndroidX=true" >> gradle.properties
+          echo "android.enableJetifier=true" >> gradle.properties
+          echo "org.gradle.jvmargs=-Xmx3g" >> gradle.properties
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build Release APK
+        run: ./gradlew assembleRelease --no-daemon --stacktrace
+        env:
+          # Ensuring ANDROID_HOME is explicitly available for the Graph Walker
+          ANDROID_HOME: /usr/local/lib/android/sdk
+
+      - name: Locate and rename APK
+        id: apk
+        run: |
+          APK=$(find app/build/outputs/apk/release -name "*.apk" | head -1)
+          if [ -z "$APK" ]; then
+            echo "Error: APK not found! Check build logs above."
+            exit 1
+          fi
+          echo "Found: $APK"
+          DEST="OnlineSessionExplorer-v1.7.apk"
+          cp "$APK" "$DEST"
+          echo "apk_path=$DEST" >> $GITHUB_OUTPUT
+          SIZE=$(du -sh "$DEST" | cut -f1)
+          echo "apk_size=$SIZE" >> $GITHUB_OUTPUT
+
+      - name: Upload APK as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: OnlineSessionExplorer-v1.7
+          path: ${{ steps.apk.outputs.apk_path }}
+          retention-days: 30
+
+      - name: Get short commit SHA
+        id: sha
+        run: echo "short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Get commit message
+        id: commit
+        run: echo "msg=$(git log -1 --pretty=%s)" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: "v1.7-${{ steps.sha.outputs.short }}"
+          name: "Online Session Explorer v1.7 (${{ steps.sha.outputs.short }})"
+          body: |
+            ## 📱 Online Session Explorer v1.7
+            Built from commit `${{ steps.sha.outputs.short }}` — ${{ steps.commit.outputs.msg }}
+
+            ### ✨ Features
+            - 🗂️ Grid & list file browser with search and sort
+            - ⬆️ Upload files with real-time progress bar
+            - ✏️ Rename, 🗑️ delete, 📁 create folders
+            - 🔒 Password-protected login screen
+            - 🎵 Video & audio streaming with range support
+            - 📋 Live server logs in-app
+
+            ### 📦 Installation
+            1. Download `OnlineSessionExplorer-v1.7.apk`
+            2. Enable *Install from unknown sources* on your device
+            3. Install and grant storage permissions
+
+            **APK size:** ${{ steps.apk.outputs.apk_size }}
+          files: ${{ steps.apk.outputs.apk_path }}
+          make_latest: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

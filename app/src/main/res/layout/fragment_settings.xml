@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_primary"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Title -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Settings"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_primary"
+            android:fontFamily="monospace"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Server Section -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="SERVER"
+            android:textSize="11sp"
+            android:textColor="@color/color_accent"
+            android:fontFamily="monospace"
+            android:letterSpacing="0.1"
+            android:layout_marginBottom="8dp" />
+
+        <!-- Serve Directory -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            app:cardBackgroundColor="@color/bg_card"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Serve Directory"
+                    android:textSize="12sp" android:textColor="@color/text_muted" android:layout_marginBottom="6dp"/>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_serve_dir"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/text_primary"
+                    android:textColorHint="@color/text_muted"
+                    android:background="@color/bg_input"
+                    android:padding="10dp"
+                    android:hint="/sdcard"
+                    android:fontFamily="monospace"
+                    android:textSize="14sp"
+                    android:inputType="textUri"
+                    android:singleLine="true" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Port -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            app:cardBackgroundColor="@color/bg_card"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Port (1024–65535)"
+                    android:textSize="12sp" android:textColor="@color/text_muted" android:layout_marginBottom="6dp"/>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_port"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/text_primary"
+                    android:background="@color/bg_input"
+                    android:padding="10dp"
+                    android:hint="8001"
+                    android:fontFamily="monospace"
+                    android:textSize="14sp"
+                    android:inputType="number"
+                    android:singleLine="true" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Password -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardBackgroundColor="@color/bg_card"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Web Password"
+                    android:textSize="12sp" android:textColor="@color/text_muted" android:layout_marginBottom="6dp"/>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/text_primary"
+                    android:background="@color/bg_input"
+                    android:padding="10dp"
+                    android:hint="702152"
+                    android:fontFamily="monospace"
+                    android:textSize="14sp"
+                    android:inputType="textPassword"
+                    android:singleLine="true" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Network Section -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="NETWORK"
+            android:textSize="11sp"
+            android:textColor="@color/color_accent"
+            android:fontFamily="monospace"
+            android:letterSpacing="0.1"
+            android:layout_marginBottom="8dp" />
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            app:cardBackgroundColor="@color/bg_card"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <!-- Label row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="6dp">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Bind IP Address"
+                        android:textSize="12sp"
+                        android:textColor="@color/text_muted"/>
+                    <TextView
+                        android:id="@+id/tv_detected_ip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:textSize="11sp"
+                        android:textColor="@color/text_muted"
+                        android:fontFamily="monospace"/>
+                </LinearLayout>
+
+                <!-- Input + auto-detect button row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="6dp">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_custom_ip"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textColor="@color/text_primary"
+                        android:textColorHint="@color/text_muted"
+                        android:background="@color/bg_input"
+                        android:padding="10dp"
+                        android:hint="e.g. 192.168.1.100"
+                        android:fontFamily="monospace"
+                        android:textSize="14sp"
+                        android:inputType="textNoSuggestions"
+                        android:singleLine="true"
+                        android:layout_marginEnd="8dp"/>
+                    <Button
+                        android:id="@+id/btn_detect_ip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Auto"
+                        android:textColor="@color/color_accent"
+                        android:textSize="12sp"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Leave empty to auto-detect. Set manually if the wrong IP is shown (e.g. VPN, hotspot)."
+                    android:textSize="11sp"
+                    android:textColor="@color/text_muted"
+                    android:lineSpacingExtra="2dp"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Detected IP display -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardBackgroundColor="@color/bg_card"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="16dp">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Auto-detected IP"
+                    android:textSize="13sp"
+                    android:textColor="@color/text_muted"/>
+                <TextView
+                    android:id="@+id/tv_local_ip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="—"
+                    android:textSize="13sp"
+                    android:textColor="@color/text_primary"
+                    android:fontFamily="monospace"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Appearance Section -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="APPEARANCE"
+            android:textSize="11sp"
+            android:textColor="@color/color_accent"
+            android:fontFamily="monospace"
+            android:letterSpacing="0.1"
+            android:layout_marginBottom="8dp" />
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            app:cardBackgroundColor="@color/bg_card"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="App Theme"
+                    android:textSize="12sp" android:textColor="@color/text_muted" android:layout_marginBottom="10dp"/>
+                <RadioGroup
+                    android:id="@+id/rg_theme"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <RadioButton android:id="@+id/rb_system"
+                        android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
+                        android:text="System" android:textColor="@color/text_primary" android:buttonTint="@color/color_accent"/>
+                    <RadioButton android:id="@+id/rb_light"
+                        android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
+                        android:text="Light" android:textColor="@color/text_primary" android:buttonTint="@color/color_accent"/>
+                    <RadioButton android:id="@+id/rb_dark"
+                        android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
+                        android:text="Dark" android:textColor="@color/text_primary" android:buttonTint="@color/color_accent"/>
+                </RadioGroup>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Save / Restart Buttons -->
+        <Button
+            android:id="@+id/btn_save"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="Save Settings"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="@color/color_accent"
+            android:stateListAnimator="@null"
+            android:layout_marginBottom="10dp"
+            style="@style/Widget.MaterialComponents.Button" />
+
+        <Button
+            android:id="@+id/btn_restart"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="Save &amp; Restart Server"
+            android:textColor="@color/color_accent"
+            android:layout_marginBottom="24dp"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+
+        <!-- Version info -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Online Session Explorer v1.7\ncom.body777.fileexp"
+            android:textSize="11sp"
+            android:textColor="@color/text_muted"
+            android:textAlignment="center"
+            android:fontFamily="monospace"
+            android:gravity="center"
+            android:layout_marginBottom="8dp" />
+
+    </LinearLayout>
+</ScrollView>

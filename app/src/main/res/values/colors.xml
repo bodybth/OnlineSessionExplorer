@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Brand -->
+    <color name="color_accent">#7C6AF7</color>
+    <color name="color_accent2">#F7C948</color>
+
+    <!-- Background layers (dark theme default) -->
+    <color name="bg_primary">#0D0D0F</color>
+    <color name="bg_surface">#18181C</color>
+    <color name="bg_card">#1F1F25</color>
+    <color name="bg_input">#0D0D0F</color>
+    <color name="bg_border">#2A2A32</color>
+
+    <!-- Text -->
+    <color name="text_primary">#E8E8F0</color>
+    <color name="text_muted">#6B6B80</color>
+    <color name="text_log">#A8A8B8</color>
+
+    <!-- Status -->
+    <color name="color_online">#66BB6A</color>
+    <color name="color_offline">#EF5350</color>
+    <color name="color_start">#7C6AF7</color>
+    <color name="color_stop">#C62828</color>
+
+    <!-- Bottom nav -->
+    <color name="bottom_nav_selected">#7C6AF7</color>
+    <color name="bottom_nav_unselected">#6B6B80</color>
+
+    <!-- System (required by Material) -->
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+</resources>

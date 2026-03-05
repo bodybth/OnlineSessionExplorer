@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Online Session Explorer · Login</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+<style>
+  :root { --bg:#0d0d0f;--card:#1f1f25;--border:#2a2a32;--accent:#7c6af7;--accent2:#f7c948;--text:#e8e8f0;--muted:#6b6b80; }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center}
+  .wrap{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:40px 36px 36px;width:100%;max-width:360px;box-shadow:0 32px 80px rgba(0,0,0,.5)}
+  .logo{font-family:'Space Mono',monospace;font-size:1.2rem;font-weight:700;color:var(--accent2);letter-spacing:-.5px;text-align:center;margin-bottom:4px}
+  .logo span{color:var(--accent)}
+  .sub{text-align:center;font-size:.8rem;color:var(--muted);margin-bottom:28px}
+  .field{position:relative;margin-bottom:14px}
+  .field .material-icons-round{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:18px;pointer-events:none}
+  .field input{width:100%;padding:11px 42px 11px 42px;background:#0d0d0f;border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:.92rem;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s}
+  .field input:focus{border-color:var(--accent)}
+  .eye-btn{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);cursor:pointer;display:flex;align-items:center;padding:0}
+  .eye-btn:hover{color:var(--text)}
+  .btn-login{width:100%;padding:12px;background:var(--accent);color:#fff;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:.95rem;font-weight:600;cursor:pointer;transition:filter .15s;margin-top:4px}
+  .btn-login:hover{filter:brightness(1.15)}
+  .error{background:rgba(198,40,40,.12);border:1px solid rgba(198,40,40,.3);color:#ef5350;border-radius:9px;padding:10px 14px;font-size:.82rem;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+  .error .material-icons-round{font-size:16px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="logo">Online<span>Session</span></div>
+  <div class="sub">Enter your password to access the file server</div>
+  __ERROR_BLOCK__
+  <form method="POST" action="/login">
+    <div class="field">
+      <span class="material-icons-round">lock</span>
+      <input type="password" id="pwd" name="password" placeholder="Password" autofocus>
+      <button type="button" class="eye-btn" onclick="t()">
+        <span class="material-icons-round" id="eye" style="font-size:18px">visibility</span>
+      </button>
+    </div>
+    <button type="submit" class="btn-login">Unlock</button>
+  </form>
+</div>
+<script>
+function t(){const i=document.getElementById('pwd'),e=document.getElementById('eye');
+i.type=i.type==='password'?'text':'password';e.textContent=i.type==='password'?'visibility':'visibility_off';}
+</script>
+</body>
+</html>

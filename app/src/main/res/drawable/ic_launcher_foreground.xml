@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Folder body -->
+    <path
+        android:fillColor="#7C6AF7"
+        android:pathData="M20,38 L20,72 C20,75.3 22.7,78 26,78 L82,78 C85.3,78 88,75.3 88,72 L88,44 C88,40.7 85.3,38 82,38 L54,38 L48,32 L26,32 C22.7,32 20,34.7 20,38 Z"/>
+    <!-- WiFi arc 1 (outer) -->
+    <path
+        android:fillColor="#F7C948"
+        android:strokeColor="#F7C948"
+        android:strokeWidth="2"
+        android:pathData="M40,58 C40,47.0 48.9,38 60,38"
+        android:fillAlpha="0"/>
+    <!-- WiFi waves centered in folder -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M54,63 C54,61.3 55.3,60 57,60 C58.7,60 60,61.3 60,63 C60,64.7 58.7,66 57,66 C55.3,66 54,64.7 54,63 Z"/>
+    <path
+        android:fillColor="#FFFFFF"
+        android:fillAlpha="0.85"
+        android:pathData="M50.5,59.5 C50.5,59.5 52.5,56 57,56 C61.5,56 63.5,59.5 63.5,59.5 L61.5,61.5 C61.5,61.5 60.3,59 57,59 C53.7,59 52.5,61.5 52.5,61.5 Z"/>
+    <path
+        android:fillColor="#FFFFFF"
+        android:fillAlpha="0.6"
+        android:pathData="M46.5,55.5 C46.5,55.5 49.5,50 57,50 C64.5,50 67.5,55.5 67.5,55.5 L65,57.5 C65,57.5 62.5,53 57,53 C51.5,53 49,57.5 49,57.5 Z"/>
+</vector>
