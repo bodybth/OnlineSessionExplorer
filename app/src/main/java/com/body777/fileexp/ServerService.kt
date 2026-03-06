@@ -182,13 +182,15 @@ class ServerService : Service() {
             }
             val cert = gen.generate(kp.private)
 
-            // Load into an in-memory JKS KeyStore — JKS is always available on Android
+            // Load into an in-memory BKS KeyStore — BKS (BouncyCastle KeyStore)
+            // is always available on Android; JKS is not.
             val pass = KS_PASS.toCharArray()
-            val ks   = KeyStore.getInstance("JKS")
+            val bcProv = org.bouncycastle.jce.provider.BouncyCastleProvider()
+            val ks   = KeyStore.getInstance("BKS", bcProv)
             ks.load(null, pass)
             ks.setKeyEntry("ose", kp.private, pass, arrayOf(cert))
 
-            val kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm())
+            val kmf = KeyManagerFactory.getInstance("X509", bcProv)
             kmf.init(ks, pass)
             val ctx = SSLContext.getInstance("TLS")
             ctx.init(kmf.keyManagers, null, null)
