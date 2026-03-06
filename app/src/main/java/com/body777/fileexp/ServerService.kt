@@ -18,6 +18,7 @@ import java.io.File
 import java.net.Inet4Address
 import java.net.NetworkInterface
 import java.security.KeyStore
+import java.security.Security
 import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.ThreadPoolExecutor
 import java.util.concurrent.TimeUnit
@@ -160,7 +161,14 @@ class ServerService : Service() {
                 }
                 AppState.log("HTTPS", "Keystore extracted to internal storage")
             }
-            val ks = KeyStore.getInstance("PKCS12")
+            // Use BouncyCastle provider explicitly — Android's default PKCS12
+            // implementation rejects modern keystores (AES-256/SHA-256 MAC) on
+            // older API levels, throwing InvalidKeyException.
+            val bcProvider = Security.getProvider("BC")
+                ?: org.bouncycastle.jce.provider.BouncyCastleProvider().also {
+                    Security.insertProviderAt(it, 1)
+                }
+            val ks = KeyStore.getInstance("PKCS12", bcProvider)
             ksFile.inputStream().use { ks.load(it, KS_PASS.toCharArray()) }
             val kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm())
             kmf.init(ks, KS_PASS.toCharArray())

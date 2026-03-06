@@ -53,4 +53,8 @@ dependencies {
 
     // Embedded web server
     implementation 'org.nanohttpd:nanohttpd:2.3.1'
+
+    // BouncyCastle — needed to load modern PKCS12 keystores on Android
+    // (Android's built-in provider rejects AES-256/SHA-256 MAC keystores)
+    implementation 'org.bouncycastle:bcprov-jdk15on:1.70'
 }
