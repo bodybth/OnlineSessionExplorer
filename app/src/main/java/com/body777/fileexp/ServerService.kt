@@ -15,15 +15,20 @@ import fi.iki.elonen.NanoHTTPD
 import fi.iki.elonen.NanoHTTPD.AsyncRunner
 import fi.iki.elonen.NanoHTTPD.ClientHandler
 import java.io.File
+import java.math.BigInteger
 import java.net.Inet4Address
 import java.net.NetworkInterface
+import java.security.KeyPairGenerator
 import java.security.KeyStore
-import java.security.Security
+import java.security.SecureRandom
+import java.util.Date
 import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.ThreadPoolExecutor
 import java.util.concurrent.TimeUnit
 import javax.net.ssl.KeyManagerFactory
 import javax.net.ssl.SSLContext
+import javax.security.auth.x500.X500Principal
+import org.bouncycastle.x509.X509V3CertificateGenerator
 
 class ServerService : Service() {
 
@@ -152,28 +157,42 @@ class ServerService : Service() {
     }
 
     // ── HTTPS / SSL ───────────────────────────────────────────────────────────
+    // Generates a self-signed RSA cert entirely at runtime and loads it into
+    // an in-memory KeyStore. This avoids all PKCS12 compatibility issues
+    // (PBES2 / AES-256 MAC errors) caused by modern keystore formats on Android.
+    @Suppress("DEPRECATION")
     private fun buildSslFactory(): javax.net.ssl.SSLServerSocketFactory? {
         return try {
-            val ksFile = File(filesDir, "ose_keystore.p12")
-            if (!ksFile.exists()) {
-                assets.open("ose_keystore.p12").use { inp ->
-                    ksFile.outputStream().use { out -> inp.copyTo(out) }
-                }
-                AppState.log("HTTPS", "Keystore extracted to internal storage")
+            // Generate 2048-bit RSA key pair
+            val kpg  = KeyPairGenerator.getInstance("RSA")
+            kpg.initialize(2048, SecureRandom())
+            val kp   = kpg.generateKeyPair()
+
+            // Build a self-signed X.509 certificate valid for 10 years
+            val now     = System.currentTimeMillis()
+            val subject = X500Principal("CN=OSE-Server, O=OnlineSessionExplorer")
+            val gen     = X509V3CertificateGenerator().apply {
+                setSerialNumber(BigInteger.valueOf(now))
+                setSubjectDN(subject)
+                setIssuerDN(subject)
+                setNotBefore(Date(now))
+                setNotAfter(Date(now + 10L * 365 * 24 * 60 * 60 * 1000))
+                setPublicKey(kp.public)
+                setSignatureAlgorithm("SHA256WithRSAEncryption")
             }
-            // Use BouncyCastle provider explicitly — Android's default PKCS12
-            // implementation rejects modern keystores (AES-256/SHA-256 MAC) on
-            // older API levels, throwing InvalidKeyException.
-            val bcProvider = Security.getProvider("BC")
-                ?: org.bouncycastle.jce.provider.BouncyCastleProvider().also {
-                    Security.insertProviderAt(it, 1)
-                }
-            val ks = KeyStore.getInstance("PKCS12", bcProvider)
-            ksFile.inputStream().use { ks.load(it, KS_PASS.toCharArray()) }
+            val cert = gen.generate(kp.private)
+
+            // Load into an in-memory JKS KeyStore — JKS is always available on Android
+            val pass = KS_PASS.toCharArray()
+            val ks   = KeyStore.getInstance("JKS")
+            ks.load(null, pass)
+            ks.setKeyEntry("ose", kp.private, pass, arrayOf(cert))
+
             val kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm())
-            kmf.init(ks, KS_PASS.toCharArray())
+            kmf.init(ks, pass)
             val ctx = SSLContext.getInstance("TLS")
             ctx.init(kmf.keyManagers, null, null)
+            AppState.log("HTTPS", "Self-signed cert generated OK")
             ctx.serverSocketFactory
         } catch (e: Exception) {
             AppState.log("ERROR", "SSL setup failed: ${e.message}")
