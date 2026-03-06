@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,137 +8,192 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
 <style>
-  :root{--bg:#0d0d0f;--surface:#18181c;--card:#1f1f25;--border:#2a2a32;--accent:#7c6af7;--accent2:#f7c948;--text:#e8e8f0;--muted:#6b6b80;--hover:#27272f;--radius:14px}
-  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:0 0 60px}
-  .topbar{position:sticky;top:0;z-index:100;background:rgba(13,13,15,.85);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;gap:12px;height:60px}
-  .logo{font-family:'Space Mono',monospace;font-size:1rem;font-weight:700;color:var(--accent2);letter-spacing:-.5px;white-space:nowrap}
-  .logo span{color:var(--accent)}
-  .search-wrap{flex:1;max-width:440px;margin-left:auto;position:relative}
-  .search-wrap .material-icons-round{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:18px;pointer-events:none}
-  #search{width:100%;padding:8px 12px 8px 38px;background:var(--card);border:1px solid var(--border);border-radius:30px;color:var(--text);font-size:.9rem;outline:none;transition:border-color .2s;font-family:'DM Sans',sans-serif}
-  #search:focus{border-color:var(--accent)}
-  .logout-btn{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:7px;color:var(--muted);display:flex;align-items:center;text-decoration:none;transition:all .15s;flex-shrink:0}
-  .logout-btn:hover{background:#c62828;border-color:#c62828;color:#fff}
-  .logout-btn .material-icons-round{font-size:18px}
-  .breadcrumb{padding:18px 24px 8px;display:flex;align-items:center;flex-wrap:wrap;gap:4px;font-family:'Space Mono',monospace;font-size:.75rem;color:var(--muted)}
-  .breadcrumb a{color:var(--accent);text-decoration:none}
-  .breadcrumb a:hover{text-decoration:underline}
-  .breadcrumb .sep{color:var(--border)}
-  .stats{padding:4px 24px 16px;font-size:.78rem;color:var(--muted);display:flex;gap:16px;align-items:center}
-  .stats b{color:var(--text)}
-  .toolbar{padding:0 24px 16px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-  .view-btn{background:var(--card);border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:6px 8px;cursor:pointer;display:flex;align-items:center;transition:all .15s}
-  .view-btn.active,.view-btn:hover{background:var(--accent);border-color:var(--accent);color:#fff}
-  .tool-btn{background:var(--card);border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:6px 10px;cursor:pointer;display:flex;align-items:center;gap:5px;font-family:'DM Sans',sans-serif;font-size:.8rem;transition:all .15s;white-space:nowrap}
-  .tool-btn .material-icons-round{font-size:16px}
-  .tool-btn:hover,.tool-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
-  .sort-select{margin-left:auto;background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:6px 10px;font-family:'DM Sans',sans-serif;font-size:.82rem;cursor:pointer;outline:none}
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:14px;padding:0 24px}
-  .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 12px 14px;text-align:center;transition:transform .15s,background .15s,box-shadow .15s;cursor:pointer;position:relative;overflow:hidden}
-  .card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.03) 0%,transparent 60%);pointer-events:none}
-  .card:hover{background:var(--hover);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.4);border-color:var(--accent)}
-  .card a{text-decoration:none;color:inherit;display:block}
-  .card .icon{font-size:40px;margin-bottom:10px}
-  .card .name{font-size:.78rem;color:var(--text);word-break:break-word;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-  .card .meta{font-size:.68rem;color:var(--muted);margin-top:4px}
-  .card .item-actions{position:absolute;top:6px;right:6px;display:flex;gap:4px;opacity:0;transition:opacity .15s;z-index:2}
-  .card:hover .item-actions{opacity:1}
-  .action-btn{background:rgba(13,13,15,.75);backdrop-filter:blur(6px);border:1px solid var(--border);border-radius:6px;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;width:26px;height:26px;font-size:14px;transition:all .15s}
-  .action-btn:hover{background:var(--accent);border-color:var(--accent);color:#fff}
-  .action-btn.del:hover{background:#c62828;border-color:#c62828;color:#fff}
-  .list{display:none;padding:0 24px;flex-direction:column;gap:2px}
-  .list.active{display:flex}
-  .grid.active{display:grid}
-  .grid:not(.active){display:none}
-  .list-item{background:var(--card);border:1px solid var(--border);border-radius:10px;display:flex;align-items:center;gap:14px;padding:12px 16px;transition:background .15s,border-color .15s;cursor:pointer}
-  .list-item:hover{background:var(--hover);border-color:var(--accent)}
-  .list-item a{text-decoration:none;color:inherit;display:flex;align-items:center;gap:14px;flex:1;min-width:0}
-  .list-item .icon{font-size:26px;flex-shrink:0}
-  .list-item .info{flex:1;min-width:0}
-  .list-item .fname{font-size:.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .list-item .fmeta{font-size:.75rem;color:var(--muted);margin-top:2px}
-  .list-item .fsize{font-family:'Space Mono',monospace;font-size:.72rem;color:var(--muted);flex-shrink:0}
-  .list-item .dl-btn{background:none;border:1px solid var(--border);border-radius:7px;padding:5px 8px;color:var(--muted);cursor:pointer;display:flex;align-items:center;flex-shrink:0;transition:all .15s;text-decoration:none;font-size:14px}
-  .list-item .dl-btn:hover{background:var(--accent);border-color:var(--accent);color:#fff}
-  .list-item .item-actions{display:flex;gap:6px;flex-shrink:0;opacity:0;transition:opacity .15s}
-  .list-item:hover .item-actions{opacity:1}
-  .empty{text-align:center;padding:80px 24px;color:var(--muted)}
-  .empty .material-icons-round{font-size:56px;margin-bottom:12px;display:block}
-  .empty p{font-size:.9rem}
-  ::-webkit-scrollbar{width:6px}
-  ::-webkit-scrollbar-track{background:transparent}
-  ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
-  @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-  .card,.list-item{animation:fadeIn .25s ease both}
-  .card:nth-child(1),.list-item:nth-child(1){animation-delay:0.000s}.card:nth-child(2),.list-item:nth-child(2){animation-delay:0.025s}.card:nth-child(3),.list-item:nth-child(3){animation-delay:0.050s}.card:nth-child(4),.list-item:nth-child(4){animation-delay:0.075s}.card:nth-child(5),.list-item:nth-child(5){animation-delay:0.100s}.card:nth-child(6),.list-item:nth-child(6){animation-delay:0.125s}.card:nth-child(7),.list-item:nth-child(7){animation-delay:0.150s}.card:nth-child(8),.list-item:nth-child(8){animation-delay:0.175s}.card:nth-child(9),.list-item:nth-child(9){animation-delay:0.200s}.card:nth-child(10),.list-item:nth-child(10){animation-delay:0.225s}.card:nth-child(11),.list-item:nth-child(11){animation-delay:0.250s}.card:nth-child(12),.list-item:nth-child(12){animation-delay:0.275s}.card:nth-child(13),.list-item:nth-child(13){animation-delay:0.300s}.card:nth-child(14),.list-item:nth-child(14){animation-delay:0.325s}.card:nth-child(15),.list-item:nth-child(15){animation-delay:0.350s}.card:nth-child(16),.list-item:nth-child(16){animation-delay:0.375s}.card:nth-child(17),.list-item:nth-child(17){animation-delay:0.400s}.card:nth-child(18),.list-item:nth-child(18){animation-delay:0.425s}.card:nth-child(19),.list-item:nth-child(19){animation-delay:0.450s}.card:nth-child(20),.list-item:nth-child(20){animation-delay:0.475s}
-  .upload-zone{margin:0 24px 20px;border:2px dashed var(--border);border-radius:var(--radius);padding:24px 28px;text-align:center;color:var(--muted);font-size:.85rem;cursor:pointer;transition:border-color .2s,background .2s;display:none}
-  .upload-zone.visible{display:block}
-  .upload-zone.dragover,.upload-zone:hover{border-color:var(--accent);background:rgba(124,106,247,.06);color:var(--text)}
-  .upload-zone>.material-icons-round{font-size:32px;display:block;margin-bottom:8px;color:var(--accent)}
-  .upload-hint{font-size:.85rem}
-  .upload-status{margin-top:14px;text-align:left}
-  .upload-fname{font-size:.8rem;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:8px;font-family:'Space Mono',monospace}
-  .upload-bar-wrap{background:var(--border);border-radius:99px;height:6px;overflow:hidden;margin-bottom:6px;position:relative}
-  .upload-bar-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),#a78bfa);border-radius:99px;transition:width .15s ease}
-  .upload-bar-fill::after{content:'';position:absolute;top:0;right:0;bottom:0;width:60px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.25));animation:shimmer 1s infinite}
-  @keyframes shimmer{0%{opacity:0}50%{opacity:1}100%{opacity:0}}
-  .upload-meta-row{display:flex;justify-content:space-between;font-size:.75rem;color:var(--muted);font-family:'Space Mono',monospace}
-  .upload-meta-row span:first-child{color:var(--accent);font-weight:700}
-  .overlay{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.65);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s}
-  .overlay.open{opacity:1;pointer-events:all}
-  .modal{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:28px 28px 24px;min-width:320px;max-width:90vw;transform:translateY(12px);transition:transform .2s;box-shadow:0 24px 64px rgba(0,0,0,.5)}
-  .overlay.open .modal{transform:translateY(0)}
-  .modal h3{font-size:1rem;font-weight:600;margin-bottom:16px;display:flex;align-items:center;gap:8px}
-  .modal h3 .material-icons-round{color:var(--accent);font-size:20px}
-  .modal input[type="text"]{width:100%;padding:9px 13px;background:var(--bg);border:1px solid var(--border);border-radius:9px;color:var(--text);font-size:.9rem;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s;margin-bottom:16px}
-  .modal input[type="text"]:focus{border-color:var(--accent)}
-  .modal p{font-size:.87rem;color:var(--muted);margin-bottom:16px;line-height:1.5}
-  .modal p b{color:var(--text)}
-  .modal-actions{display:flex;gap:10px;justify-content:flex-end}
-  .btn{border:none;border-radius:9px;padding:8px 18px;font-family:'DM Sans',sans-serif;font-size:.88rem;font-weight:500;cursor:pointer;transition:all .15s}
-  .btn-ghost{background:var(--bg);color:var(--muted);border:1px solid var(--border)}
-  .btn-ghost:hover{border-color:var(--muted);color:var(--text)}
-  .btn-primary{background:var(--accent);color:#fff;border:1px solid transparent}
-  .btn-primary:hover{filter:brightness(1.15)}
-  .btn-danger{background:#c62828;color:#fff;border:1px solid transparent}
-  .btn-danger:hover{filter:brightness(1.15)}
-  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--card);border:1px solid var(--border);border-radius:99px;padding:10px 22px;font-size:.85rem;color:var(--text);box-shadow:0 8px 32px rgba(0,0,0,.4);transition:transform .3s cubic-bezier(.34,1.56,.64,1);z-index:300;display:flex;align-items:center;gap:8px;white-space:nowrap}
-  .toast.show{transform:translateX(-50%) translateY(0)}
-  .toast .material-icons-round{font-size:16px}
-  .toast.success .material-icons-round{color:#66bb6a}
-  .toast.error .material-icons-round{color:#ef5350}
-  @media(max-width:480px){.grid{grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:10px}.topbar{padding:0 14px}.breadcrumb,.stats,.toolbar,.grid,.list{padding-left:14px;padding-right:14px}}
+:root{--bg:#0d0d0f;--surface:#18181c;--card:#1f1f25;--border:#2a2a32;--accent:#7c6af7;--accent2:#f7c948;--text:#e8e8f0;--muted:#6b6b80;--hover:#27272f;--radius:14px;--log-text:#a8a8b8}
+[data-theme="light"]{--bg:#f4f4f8;--surface:#ffffff;--card:#ffffff;--border:#e0e0ea;--accent:#5b4de0;--accent2:#d4a017;--text:#1a1a2e;--muted:#7070a0;--hover:#ebebf5;--log-text:#444460}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:0 0 60px;transition:background .25s,color .25s}
+/* ── Topbar ── */
+.topbar{position:sticky;top:0;z-index:100;background:rgba(13,13,15,.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 20px;display:flex;align-items:center;gap:10px;height:58px}
+[data-theme="light"] .topbar{background:rgba(255,255,255,.9)}
+.logo{font-family:'Space Mono',monospace;font-size:.95rem;font-weight:700;color:var(--accent2);white-space:nowrap}
+.logo span{color:var(--accent)}
+.search-wrap{flex:1;max-width:380px;margin-left:auto;position:relative}
+.search-wrap .material-icons-round{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:17px;pointer-events:none}
+#search{width:100%;padding:7px 11px 7px 36px;background:var(--card);border:1px solid var(--border);border-radius:30px;color:var(--text);font-size:.88rem;outline:none;transition:border-color .2s;font-family:'DM Sans',sans-serif}
+#search:focus{border-color:var(--accent)}
+.topbar-btn{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:6px;color:var(--muted);display:flex;align-items:center;cursor:pointer;transition:all .15s;flex-shrink:0;text-decoration:none}
+.topbar-btn:hover{background:var(--hover);color:var(--text);border-color:var(--muted)}
+.topbar-btn .material-icons-round{font-size:18px}
+.theme-btn.active-dark,.theme-btn.active-light{border-color:var(--accent);color:var(--accent)}
+/* ── Layout ── */
+.breadcrumb{padding:16px 20px 6px;display:flex;align-items:center;flex-wrap:wrap;gap:4px;font-family:'Space Mono',monospace;font-size:.72rem;color:var(--muted)}
+.breadcrumb a{color:var(--accent);text-decoration:none}.breadcrumb a:hover{text-decoration:underline}
+.breadcrumb .sep{color:var(--border)}
+.stats{padding:3px 20px 14px;font-size:.76rem;color:var(--muted);display:flex;gap:14px}
+.stats b{color:var(--text)}
+.toolbar{padding:0 20px 14px;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.view-btn,.tool-btn{background:var(--card);border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:6px 8px;cursor:pointer;display:flex;align-items:center;gap:5px;font-family:'DM Sans',sans-serif;font-size:.8rem;transition:all .15s;white-space:nowrap}
+.view-btn .material-icons-round,.tool-btn .material-icons-round{font-size:17px}
+.view-btn.active,.view-btn:hover,.tool-btn.active,.tool-btn:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+.sort-select{margin-left:auto;background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:6px 10px;font-family:'DM Sans',sans-serif;font-size:.82rem;cursor:pointer;outline:none}
+/* ── Grid ── */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px;padding:0 20px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px 10px 12px;text-align:center;transition:transform .15s,background .15s,box-shadow .15s;cursor:pointer;position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.03) 0%,transparent 60%);pointer-events:none}
+.card:hover{background:var(--hover);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.3);border-color:var(--accent)}
+.card a{text-decoration:none;color:inherit;display:block}
+.card .icon{font-size:38px;margin-bottom:8px}
+.card .name{font-size:.76rem;color:var(--text);word-break:break-word;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card .meta{font-size:.65rem;color:var(--muted);margin-top:3px}
+.card .item-actions{position:absolute;top:5px;right:5px;display:flex;gap:3px;opacity:0;transition:opacity .15s;z-index:2}
+.card:hover .item-actions{opacity:1}
+/* ── List ── */
+.list{display:none;flex-direction:column;gap:2px;padding:0 20px}
+.list.active{display:flex}.grid.active{display:grid}.grid:not(.active){display:none}
+.list-item{background:var(--card);border:1px solid var(--border);border-radius:10px;display:flex;align-items:center;gap:12px;padding:10px 14px;transition:background .15s,border-color .15s}
+.list-item:hover{background:var(--hover);border-color:var(--accent)}
+.list-item a{text-decoration:none;color:inherit;display:flex;align-items:center;gap:12px;flex:1;min-width:0}
+.list-item .icon{font-size:24px;flex-shrink:0}
+.list-item .info{flex:1;min-width:0}
+.list-item .fname{font-size:.88rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.list-item .fmeta{font-size:.73rem;color:var(--muted);margin-top:2px}
+.list-item .fsize{font-family:'Space Mono',monospace;font-size:.7rem;color:var(--muted);flex-shrink:0}
+.list-item .dl-btn{background:none;border:1px solid var(--border);border-radius:7px;padding:4px 7px;color:var(--muted);cursor:pointer;display:flex;align-items:center;flex-shrink:0;transition:all .15s;text-decoration:none}
+.list-item .dl-btn:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+.list-item .item-actions{display:flex;gap:5px;flex-shrink:0;opacity:0;transition:opacity .15s}
+.list-item:hover .item-actions{opacity:1}
+/* ── Action buttons ── */
+.action-btn{background:rgba(13,13,15,.75);backdrop-filter:blur(6px);border:1px solid var(--border);border-radius:6px;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;width:26px;height:26px;transition:all .15s}
+.action-btn .material-icons-round{font-size:14px}
+.action-btn:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+.action-btn.del:hover{background:#c62828;border-color:#c62828;color:#fff}
+.action-btn.edit:hover{background:#00838f;border-color:#00838f;color:#fff}
+/* ── Upload zone ── */
+.upload-zone{margin:0 20px 18px;border:2px dashed var(--border);border-radius:var(--radius);padding:22px 24px;text-align:center;color:var(--muted);font-size:.84rem;cursor:pointer;transition:border-color .2s,background .2s;display:none}
+.upload-zone.visible{display:block}
+.upload-zone.dragover,.upload-zone:hover{border-color:var(--accent);background:rgba(124,106,247,.06);color:var(--text)}
+.upload-zone>.material-icons-round{font-size:30px;display:block;margin-bottom:7px;color:var(--accent)}
+.upload-status{margin-top:12px;text-align:left}
+.upload-fname{font-size:.78rem;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:6px;font-family:'Space Mono',monospace}
+.upload-bar-wrap{background:var(--border);border-radius:99px;height:5px;overflow:hidden;margin-bottom:5px;position:relative}
+.upload-bar-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),#a78bfa);border-radius:99px;transition:width .15s ease}
+.upload-bar-fill::after{content:'';position:absolute;top:0;right:0;bottom:0;width:50px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.25));animation:shimmer 1s infinite}
+@keyframes shimmer{0%{opacity:0}50%{opacity:1}100%{opacity:0}}
+.upload-meta-row{display:flex;justify-content:space-between;font-size:.72rem;color:var(--muted);font-family:'Space Mono',monospace}
+.upload-meta-row span:first-child{color:var(--accent);font-weight:700}
+/* ── Empty state ── */
+.empty{text-align:center;padding:70px 20px;color:var(--muted)}
+.empty .material-icons-round{font-size:52px;margin-bottom:10px;display:block}
+/* ── Overlays / Modals ── */
+.overlay{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.65);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s}
+.overlay.open{opacity:1;pointer-events:all}
+.modal{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:26px 26px 22px;width:100%;max-width:94vw;transform:translateY(12px);transition:transform .2s;box-shadow:0 24px 64px rgba(0,0,0,.45)}
+.overlay.open .modal{transform:translateY(0)}
+.modal h3{font-size:.98rem;font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:7px}
+.modal h3 .material-icons-round{color:var(--accent);font-size:19px}
+.modal input[type="text"],.modal input[type="url"]{width:100%;padding:8px 12px;background:var(--bg);border:1px solid var(--border);border-radius:9px;color:var(--text);font-size:.9rem;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s;margin-bottom:14px}
+.modal input:focus{border-color:var(--accent)}
+.modal p{font-size:.86rem;color:var(--muted);margin-bottom:14px;line-height:1.5}
+.modal p b{color:var(--text)}
+.modal-actions{display:flex;gap:9px;justify-content:flex-end}
+.btn{border:none;border-radius:9px;padding:7px 16px;font-family:'DM Sans',sans-serif;font-size:.87rem;font-weight:500;cursor:pointer;transition:all .15s}
+.btn-ghost{background:var(--bg);color:var(--muted);border:1px solid var(--border)}.btn-ghost:hover{border-color:var(--muted);color:var(--text)}
+.btn-primary{background:var(--accent);color:#fff;border:1px solid transparent}.btn-primary:hover{filter:brightness(1.15)}
+.btn-danger{background:#c62828;color:#fff;border:1px solid transparent}.btn-danger:hover{filter:brightness(1.15)}
+/* ── Text Editor ── */
+#editor-overlay .modal{max-width:98vw;width:860px;max-height:92vh;display:flex;flex-direction:column}
+.editor-header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.editor-header h3{margin:0;flex:1}
+.editor-filename{font-family:'Space Mono',monospace;font-size:.8rem;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#editor-textarea{flex:1;width:100%;min-height:340px;max-height:55vh;background:var(--bg);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'Space Mono',monospace;font-size:.82rem;line-height:1.6;padding:12px 14px;outline:none;resize:vertical;transition:border-color .2s;tab-size:4}
+#editor-textarea:focus{border-color:var(--accent)}
+.editor-status{font-size:.73rem;color:var(--muted);margin-top:6px;min-height:16px;font-family:'Space Mono',monospace}
+/* ── Search panel ── */
+#search-panel{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);display:flex;align-items:flex-start;justify-content:center;padding-top:60px;opacity:0;pointer-events:none;transition:opacity .2s}
+#search-panel.open{opacity:1;pointer-events:all}
+.search-box{background:var(--card);border:1px solid var(--border);border-radius:18px;width:100%;max-width:560px;max-height:75vh;display:flex;flex-direction:column;box-shadow:0 24px 64px rgba(0,0,0,.5)}
+.search-input-row{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--border)}
+.search-input-row .material-icons-round{color:var(--muted);font-size:20px;flex-shrink:0}
+#panel-search{flex:1;background:none;border:none;color:var(--text);font-size:1rem;font-family:'DM Sans',sans-serif;outline:none}
+#panel-search::placeholder{color:var(--muted)}
+.search-close{background:none;border:none;color:var(--muted);cursor:pointer;display:flex;padding:4px}
+.search-results{overflow-y:auto;padding:8px 10px;flex:1}
+.search-result-item{display:flex;align-items:center;gap:12px;padding:9px 10px;border-radius:10px;cursor:pointer;text-decoration:none;color:var(--text);transition:background .12s}
+.search-result-item:hover{background:var(--hover)}
+.search-result-item .material-icons-round{font-size:20px;flex-shrink:0}
+.sr-info{flex:1;min-width:0}
+.sr-name{font-size:.88rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sr-path{font-size:.72rem;color:var(--muted);font-family:'Space Mono',monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.search-empty{text-align:center;padding:32px;color:var(--muted);font-size:.86rem}
+/* ── URL fetch (clipboard share) ── */
+#fetch-overlay .modal{max-width:480px}
+/* ── ZIP progress overlay ── */
+.zip-overlay{position:fixed;inset:0;z-index:400;background:rgba(0,0,0,.65);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s}
+.zip-overlay.open{opacity:1;pointer-events:all}
+.zip-spinner{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:28px 36px;text-align:center;box-shadow:0 24px 64px rgba(0,0,0,.45)}
+.zip-spinner p{color:var(--text);font-size:.9rem;margin-top:12px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin-icon{animation:spin 1s linear infinite;display:block;font-size:36px;color:var(--accent)}
+/* ── Toast ── */
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--card);border:1px solid var(--border);border-radius:99px;padding:9px 20px;font-size:.84rem;color:var(--text);box-shadow:0 8px 32px rgba(0,0,0,.4);transition:transform .3s cubic-bezier(.34,1.56,.64,1);z-index:500;display:flex;align-items:center;gap:7px;white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast .material-icons-round{font-size:15px}
+.toast.success .material-icons-round{color:#66bb6a}
+.toast.error .material-icons-round{color:#ef5350}
+/* ── Animations ── */
+@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.card,.list-item{animation:fadeIn .22s ease both}
+.card:nth-child(1),.list-item:nth-child(1){animation-delay:.000s}.card:nth-child(2),.list-item:nth-child(2){animation-delay:.02s}.card:nth-child(3),.list-item:nth-child(3){animation-delay:.04s}.card:nth-child(4),.list-item:nth-child(4){animation-delay:.06s}.card:nth-child(5),.list-item:nth-child(5){animation-delay:.08s}.card:nth-child(6),.list-item:nth-child(6){animation-delay:.10s}.card:nth-child(7),.list-item:nth-child(7){animation-delay:.12s}.card:nth-child(8),.list-item:nth-child(8){animation-delay:.14s}.card:nth-child(9),.list-item:nth-child(9){animation-delay:.16s}.card:nth-child(10),.list-item:nth-child(10){animation-delay:.18s}.card:nth-child(11),.list-item:nth-child(11){animation-delay:.20s}.card:nth-child(12),.list-item:nth-child(12){animation-delay:.22s}.card:nth-child(13),.list-item:nth-child(13){animation-delay:.24s}.card:nth-child(14),.list-item:nth-child(14){animation-delay:.26s}.card:nth-child(15),.list-item:nth-child(15){animation-delay:.28s}
+/* ── Scrollbar ── */
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+@media(max-width:480px){.grid{grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:9px}.topbar,.breadcrumb,.stats,.toolbar,.grid,.list,.upload-zone{padding-left:12px;padding-right:12px}}
 </style>
 </head>
 <body>
+
+<!-- ═══ TOPBAR ═══ -->
 <div class="topbar">
   <div class="logo">Online<span>Session</span></div>
   <div class="search-wrap">
     <span class="material-icons-round">search</span>
-    <input id="search" type="search" placeholder="Filter files…" autocomplete="off">
+    <input id="search" type="search" placeholder="Filter current folder…" autocomplete="off">
   </div>
-  <a href="/logout" class="logout-btn" title="Lock / Log out">
+  <!-- Deep search -->
+  <button class="topbar-btn" onclick="openSearchPanel()" title="Search all files">
+    <span class="material-icons-round">manage_search</span>
+  </button>
+  <!-- Theme toggle -->
+  <button class="topbar-btn theme-btn" id="theme-btn" onclick="toggleTheme()" title="Toggle theme">
+    <span class="material-icons-round" id="theme-icon">dark_mode</span>
+  </button>
+  <!-- Logout -->
+  <a href="/logout" class="topbar-btn" title="Logout">
     <span class="material-icons-round">lock</span>
   </a>
 </div>
 
 <div class="breadcrumb">__BREADCRUMBS__</div>
-
 <div class="stats">__STATS__</div>
 
+<!-- ═══ TOOLBAR ═══ -->
 <div class="toolbar">
   <button class="view-btn active" id="btn-grid" onclick="setView('grid')" title="Grid">
-    <span class="material-icons-round" style="font-size:18px">grid_view</span>
+    <span class="material-icons-round">grid_view</span>
   </button>
   <button class="view-btn" id="btn-list" onclick="setView('list')" title="List">
-    <span class="material-icons-round" style="font-size:18px">view_list</span>
+    <span class="material-icons-round">view_list</span>
   </button>
-  <button class="tool-btn" id="btn-upload" onclick="toggleUpload()" title="Upload files">
+  <button class="tool-btn" id="btn-upload" onclick="toggleUpload()">
     <span class="material-icons-round">upload</span> Upload
   </button>
-  <button class="tool-btn" onclick="openMkdir()" title="New folder">
+  <button class="tool-btn" onclick="openMkdir()">
     <span class="material-icons-round">create_new_folder</span> New Folder
+  </button>
+  <button class="tool-btn" onclick="openFetchUrl()" title="Download from URL">
+    <span class="material-icons-round">content_paste</span> From URL
+  </button>
+  <button class="tool-btn" onclick="zipSelected()" title="Zip checked items">
+    <span class="material-icons-round">archive</span> Zip Selection
   </button>
   <select class="sort-select" id="sort-sel" onchange="sortItems()">
     <option value="name-asc">Name A→Z</option>
@@ -150,6 +205,7 @@
   </select>
 </div>
 
+<!-- ═══ UPLOAD ZONE ═══ -->
 <div class="upload-zone" id="upload-zone" onclick="document.getElementById('file-input').click()">
   <span class="material-icons-round">cloud_upload</span>
   <div class="upload-hint"><strong>Click to browse</strong> or drag &amp; drop files here</div>
@@ -161,15 +217,48 @@
   </div>
 </div>
 
+<!-- ═══ FILE GRIDS ═══ -->
 <div class="grid active" id="grid-view">__GRID_ITEMS__</div>
 <div class="list" id="list-view">__LIST_ITEMS__</div>
-
 <div class="empty" style="__EMPTY_HIDDEN__">
-  <span class="material-icons-round">folder_open</span>
-  <p>This folder is empty.</p>
+  <span class="material-icons-round">folder_open</span><p>This folder is empty.</p>
 </div>
 
-<!-- Rename Modal -->
+<!-- ═══ DEEP SEARCH PANEL ═══ -->
+<div id="search-panel" onclick="if(event.target===this)closeSearchPanel()">
+  <div class="search-box">
+    <div class="search-input-row">
+      <span class="material-icons-round">manage_search</span>
+      <input id="panel-search" placeholder="Search all files and folders…" autocomplete="off">
+      <button class="search-close" onclick="closeSearchPanel()">
+        <span class="material-icons-round">close</span>
+      </button>
+    </div>
+    <div class="search-results" id="search-results">
+      <div class="search-empty">Type at least 2 characters to search</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ TEXT EDITOR MODAL ═══ -->
+<div class="overlay" id="editor-overlay" onclick="if(event.target===this)closeEditor()">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="editor-header">
+      <h3><span class="material-icons-round">edit_note</span> <span id="editor-title">Edit File</span></h3>
+      <span class="editor-filename" id="editor-fname"></span>
+    </div>
+    <textarea id="editor-textarea" spellcheck="false" placeholder="Loading…"></textarea>
+    <div class="editor-status" id="editor-status"></div>
+    <div class="modal-actions" style="margin-top:10px">
+      <button class="btn btn-ghost" onclick="closeEditor()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveEditor()">
+        <span class="material-icons-round" style="font-size:14px;vertical-align:middle">save</span> Save
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ RENAME MODAL ═══ -->
 <div class="overlay" id="rename-overlay" onclick="closeModal('rename-overlay')">
   <div class="modal" onclick="event.stopPropagation()">
     <h3><span class="material-icons-round">drive_file_rename_outline</span> Rename</h3>
@@ -181,11 +270,11 @@
   </div>
 </div>
 
-<!-- Delete Modal -->
+<!-- ═══ DELETE MODAL ═══ -->
 <div class="overlay" id="delete-overlay" onclick="closeModal('delete-overlay')">
   <div class="modal" onclick="event.stopPropagation()">
     <h3><span class="material-icons-round" style="color:#ef5350">delete_forever</span> Delete</h3>
-    <p>Are you sure you want to delete <b id="delete-name-label"></b>?<br>This cannot be undone.</p>
+    <p>Delete <b id="delete-name-label"></b>? This cannot be undone.</p>
     <div class="modal-actions">
       <button class="btn btn-ghost" onclick="closeModal('delete-overlay')">Cancel</button>
       <button class="btn btn-danger" onclick="doDelete()">Delete</button>
@@ -193,7 +282,7 @@
   </div>
 </div>
 
-<!-- New Folder Modal -->
+<!-- ═══ NEW FOLDER MODAL ═══ -->
 <div class="overlay" id="mkdir-overlay" onclick="closeModal('mkdir-overlay')">
   <div class="modal" onclick="event.stopPropagation()">
     <h3><span class="material-icons-round">create_new_folder</span> New Folder</h3>
@@ -205,6 +294,31 @@
   </div>
 </div>
 
+<!-- ═══ URL FETCH MODAL ═══ -->
+<div class="overlay" id="fetch-overlay" onclick="closeModal('fetch-overlay')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <h3><span class="material-icons-round">content_paste</span> Download from URL</h3>
+    <p>Paste a URL and the server will download it directly into the current folder.</p>
+    <input type="url" id="fetch-url-input" placeholder="https://example.com/file.zip" onkeydown="if(event.key==='Enter')doFetchUrl()">
+    <div id="fetch-status" style="font-size:.8rem;color:var(--muted);margin-bottom:10px;min-height:16px;font-family:'Space Mono',monospace"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('fetch-overlay')">Cancel</button>
+      <button class="btn btn-primary" id="fetch-btn" onclick="doFetchUrl()">
+        <span class="material-icons-round" style="font-size:14px;vertical-align:middle">download</span> Download
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ ZIP SPINNER ═══ -->
+<div class="zip-overlay" id="zip-overlay">
+  <div class="zip-spinner">
+    <span class="material-icons-round spin-icon">autorenew</span>
+    <p id="zip-msg">Processing…</p>
+  </div>
+</div>
+
+<!-- ═══ TOAST ═══ -->
 <div class="toast" id="toast">
   <span class="material-icons-round" id="toast-icon">check_circle</span>
   <span id="toast-msg"></span>
@@ -213,103 +327,117 @@
 <script>
 const CURRENT_PATH = __CURRENT_PATH_JSON__;
 
+// ── Theme ─────────────────────────────────────────────────────────────────────
+let currentTheme = localStorage.getItem('ose-theme') || 'dark';
+applyTheme(currentTheme, false);
+function applyTheme(t, save=true){
+  currentTheme = t;
+  document.documentElement.setAttribute('data-theme', t);
+  const icon = document.getElementById('theme-icon');
+  const btn  = document.getElementById('theme-btn');
+  icon.textContent = t === 'dark' ? 'light_mode' : 'dark_mode';
+  btn.classList.toggle('active-dark', t === 'dark');
+  btn.classList.toggle('active-light', t === 'light');
+  if (save) localStorage.setItem('ose-theme', t);
+}
+function toggleTheme(){ applyTheme(currentTheme === 'dark' ? 'light' : 'dark'); }
+
+// ── View toggle ───────────────────────────────────────────────────────────────
 let currentView = localStorage.getItem('ose-view') || 'grid';
 setView(currentView, false);
 function setView(v, save=true){
-  currentView=v;
-  document.getElementById('grid-view').classList.toggle('active',v==='grid');
-  document.getElementById('list-view').classList.toggle('active',v==='list');
-  document.getElementById('btn-grid').classList.toggle('active',v==='grid');
-  document.getElementById('btn-list').classList.toggle('active',v==='list');
-  if(save)localStorage.setItem('ose-view',v);
+  currentView = v;
+  document.getElementById('grid-view').classList.toggle('active', v==='grid');
+  document.getElementById('list-view').classList.toggle('active', v==='list');
+  document.getElementById('btn-grid').classList.toggle('active', v==='grid');
+  document.getElementById('btn-list').classList.toggle('active', v==='list');
+  if(save) localStorage.setItem('ose-view', v);
 }
 
-document.getElementById('search').addEventListener('input',function(){
-  const q=this.value.toLowerCase();
-  document.querySelectorAll('.card[data-name],.list-item[data-name]').forEach(el=>{
-    const n=el.dataset.name;
-    el.style.display=(n==='..'||n.includes(q))?'':'none';
+// ── Filter (current folder) ───────────────────────────────────────────────────
+document.getElementById('search').addEventListener('input', function(){
+  const q = this.value.toLowerCase();
+  document.querySelectorAll('.card[data-name],.list-item[data-name]').forEach(el => {
+    el.style.display = (el.dataset.name==='..' || el.dataset.name.includes(q)) ? '' : 'none';
   });
 });
 
+// ── Sort ──────────────────────────────────────────────────────────────────────
 function sortItems(){
-  const sel=document.getElementById('sort-sel').value;
-  const[key,dir]=sel.split('-');const mul=dir==='asc'?1:-1;
-  ['grid-view','list-view'].forEach(id=>{
-    const c=document.getElementById(id);
-    const back=c.querySelector('[data-name=".."]');
-    const items=[...c.querySelectorAll('[data-name]:not([data-name=".."])')];
-    items.sort((a,b)=>{
-      let av=a.dataset[key],bv=b.dataset[key];
-      if(key==='size'||key==='date'){av=parseFloat(av);bv=parseFloat(bv);return(av-bv)*mul;}
+  const [key, dir] = document.getElementById('sort-sel').value.split('-');
+  const mul = dir === 'asc' ? 1 : -1;
+  ['grid-view','list-view'].forEach(id => {
+    const c = document.getElementById(id);
+    const back = c.querySelector('[data-name=".."]');
+    const items = [...c.querySelectorAll('[data-name]:not([data-name=".."])')];
+    items.sort((a,b) => {
+      let av = a.dataset[key], bv = b.dataset[key];
+      if(key==='size'||key==='date'){ av=parseFloat(av); bv=parseFloat(bv); return (av-bv)*mul; }
       return av.localeCompare(bv)*mul;
     });
-    items.forEach(el=>c.appendChild(el));
-    if(back)c.insertBefore(back,c.firstChild);
+    items.forEach(el => c.appendChild(el));
+    if(back) c.insertBefore(back, c.firstChild);
   });
 }
 
+// ── Toast ─────────────────────────────────────────────────────────────────────
 let toastTimer;
-function showToast(msg,type='success'){
+function showToast(msg, type='success'){
   const t=document.getElementById('toast');
-  const icon=document.getElementById('toast-icon');
-  document.getElementById('toast-msg').textContent=msg;
-  t.className='toast '+type;
-  icon.textContent=type==='success'?'check_circle':'error';
-  t.classList.add('show');
+  document.getElementById('toast-icon').textContent = type==='success'?'check_circle':'error';
+  document.getElementById('toast-msg').textContent = msg;
+  t.className='toast '+type; t.classList.add('show');
   clearTimeout(toastTimer);
-  toastTimer=setTimeout(()=>t.classList.remove('show'),3000);
+  toastTimer=setTimeout(()=>t.classList.remove('show'), 3200);
 }
-function openModal(id){document.getElementById(id).classList.add('open');}
-function closeModal(id){document.getElementById(id).classList.remove('open');}
+function openModal(id){ document.getElementById(id).classList.add('open'); }
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
 
+// ── Upload ────────────────────────────────────────────────────────────────────
 function toggleUpload(){
-  const z=document.getElementById('upload-zone');
-  const b=document.getElementById('btn-upload');
-  const v=z.classList.toggle('visible');
-  b.classList.toggle('active',v);
+  const z=document.getElementById('upload-zone'), b=document.getElementById('btn-upload');
+  z.classList.toggle('visible'); b.classList.toggle('active', z.classList.contains('visible'));
 }
-const dropZone=document.getElementById('upload-zone');
-dropZone.addEventListener('dragover',e=>{e.preventDefault();dropZone.classList.add('dragover');});
-dropZone.addEventListener('dragleave',()=>dropZone.classList.remove('dragover'));
-dropZone.addEventListener('drop',e=>{e.preventDefault();dropZone.classList.remove('dragover');handleFiles(e.dataTransfer.files);});
+const dropZone = document.getElementById('upload-zone');
+dropZone.addEventListener('dragover', e=>{ e.preventDefault(); dropZone.classList.add('dragover'); });
+dropZone.addEventListener('dragleave', ()=>dropZone.classList.remove('dragover'));
+dropZone.addEventListener('drop', e=>{ e.preventDefault(); dropZone.classList.remove('dragover'); handleFiles(e.dataTransfer.files); });
 
-function uploadFile(file,index,total){
-  return new Promise((resolve,reject)=>{
+function uploadFile(file, index, total){
+  return new Promise((resolve,reject) => {
     const status=document.getElementById('upload-status');
-    const fname=document.getElementById('upload-fname');
-    const barFill=document.getElementById('upload-bar-fill');
+    const fill=document.getElementById('upload-bar-fill');
     const pct=document.getElementById('upload-pct');
-    const counter=document.getElementById('upload-counter');
     status.style.display='block';
     document.querySelector('.upload-hint').style.display='none';
-    fname.textContent=file.name;barFill.style.width='0%';pct.textContent='0%';
-    counter.textContent='File '+(index+1)+' of '+total;
-    const fd=new FormData();fd.append('file',file);
+    document.getElementById('upload-fname').textContent=file.name;
+    document.getElementById('upload-counter').textContent='File '+(index+1)+' of '+total;
+    fill.style.width='0%'; pct.textContent='0%';
+    const fd=new FormData(); fd.append('file',file);
     const xhr=new XMLHttpRequest();
     xhr.open('POST','/api/upload?path='+encodeURIComponent(CURRENT_PATH));
-    xhr.upload.addEventListener('progress',e=>{
-      if(!e.lengthComputable)return;
+    xhr.upload.addEventListener('progress', e=>{
+      if(!e.lengthComputable) return;
       const p=Math.round(e.loaded/e.total*100);
-      barFill.style.width=p+'%';pct.textContent=p+'%';
+      fill.style.width=p+'%'; pct.textContent=p+'%';
     });
-    xhr.addEventListener('load',()=>{
-      if(xhr.status>=200&&xhr.status<300){barFill.style.width='100%';pct.textContent='100%';resolve();}
-      else{try{reject(new Error(JSON.parse(xhr.responseText).error||'Upload failed'));}catch{reject(new Error('Upload failed'));}}
+    xhr.addEventListener('load', ()=>{
+      if(xhr.status>=200&&xhr.status<300){ fill.style.width='100%'; pct.textContent='100%'; resolve(); }
+      else{ try{reject(new Error(JSON.parse(xhr.responseText).error||'Upload failed'));}catch{reject(new Error('Upload failed'));} }
     });
-    xhr.addEventListener('error',()=>reject(new Error('Network error')));
+    xhr.addEventListener('error', ()=>reject(new Error('Network error')));
     xhr.send(fd);
   });
 }
 async function handleFiles(files){
-  if(!files.length)return;
+  if(!files.length) return;
   dropZone.onclick=null;
   for(let i=0;i<files.length;i++){
-    try{await uploadFile(files[i],i,files.length);}
-    catch(err){showToast(err.message,'error');resetUpload();return;}
+    try{ await uploadFile(files[i],i,files.length); }
+    catch(err){ showToast(err.message,'error'); resetUpload(); return; }
   }
   showToast('Uploaded '+files.length+' file'+(files.length>1?'s':''),'success');
-  setTimeout(()=>location.reload(),800);
+  setTimeout(()=>location.reload(), 800);
 }
 function resetUpload(){
   document.getElementById('upload-status').style.display='none';
@@ -318,26 +446,28 @@ function resetUpload(){
   dropZone.onclick=()=>document.getElementById('file-input').click();
 }
 
+// ── Rename ────────────────────────────────────────────────────────────────────
 let renameTarget='';
 function openRename(name){
   renameTarget=name;
   const inp=document.getElementById('rename-input');
-  inp.value=name;openModal('rename-overlay');
-  setTimeout(()=>{inp.select();},80);
+  inp.value=name; openModal('rename-overlay');
+  setTimeout(()=>inp.select(), 80);
 }
 async function doRename(){
   const newName=document.getElementById('rename-input').value.trim();
-  if(!newName||newName===renameTarget){closeModal('rename-overlay');return;}
+  if(!newName||newName===renameTarget){ closeModal('rename-overlay'); return; }
   try{
     const res=await fetch('/api/rename',{method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({path:CURRENT_PATH,old_name:renameTarget,new_name:newName})});
-    const data=await res.json();
-    if(!res.ok)throw new Error(data.error||'Rename failed');
-    closeModal('rename-overlay');showToast('Renamed to "'+newName+'"','success');
-    setTimeout(()=>location.reload(),700);
-  }catch(err){showToast(err.message,'error');}
+    const d=await res.json();
+    if(!res.ok) throw new Error(d.error||'Rename failed');
+    closeModal('rename-overlay'); showToast('Renamed to "'+newName+'"');
+    setTimeout(()=>location.reload(), 700);
+  } catch(e){ showToast(e.message,'error'); }
 }
 
+// ── Delete ────────────────────────────────────────────────────────────────────
 let deleteTarget='';
 function openDelete(name){
   deleteTarget=name;
@@ -348,33 +478,196 @@ async function doDelete(){
   try{
     const res=await fetch('/api/delete',{method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({path:CURRENT_PATH,name:deleteTarget})});
-    const data=await res.json();
-    if(!res.ok)throw new Error(data.error||'Delete failed');
-    closeModal('delete-overlay');showToast('Deleted "'+deleteTarget+'"','success');
-    setTimeout(()=>location.reload(),700);
-  }catch(err){showToast(err.message,'error');}
+    const d=await res.json();
+    if(!res.ok) throw new Error(d.error||'Delete failed');
+    closeModal('delete-overlay'); showToast('Deleted "'+deleteTarget+'"');
+    setTimeout(()=>location.reload(), 700);
+  } catch(e){ showToast(e.message,'error'); }
 }
 
+// ── New folder ────────────────────────────────────────────────────────────────
 function openMkdir(){
-  document.getElementById('mkdir-input').value='';
-  openModal('mkdir-overlay');
-  setTimeout(()=>document.getElementById('mkdir-input').focus(),80);
+  document.getElementById('mkdir-input').value=''; openModal('mkdir-overlay');
+  setTimeout(()=>document.getElementById('mkdir-input').focus(), 80);
 }
 async function doMkdir(){
-  const name=document.getElementById('mkdir-input').value.trim();
-  if(!name)return;
+  const name=document.getElementById('mkdir-input').value.trim(); if(!name) return;
   try{
     const res=await fetch('/api/mkdir',{method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({path:CURRENT_PATH,name})});
-    const data=await res.json();
-    if(!res.ok)throw new Error(data.error||'Failed to create folder');
-    closeModal('mkdir-overlay');showToast('Folder "'+name+'" created','success');
-    setTimeout(()=>location.reload(),700);
-  }catch(err){showToast(err.message,'error');}
+    const d=await res.json();
+    if(!res.ok) throw new Error(d.error||'Failed');
+    closeModal('mkdir-overlay'); showToast('Folder "'+name+'" created');
+    setTimeout(()=>location.reload(), 700);
+  } catch(e){ showToast(e.message,'error'); }
 }
 
-document.addEventListener('keydown',e=>{
-  if(e.key==='Escape')['rename-overlay','delete-overlay','mkdir-overlay'].forEach(closeModal);
+// ── Text Editor ───────────────────────────────────────────────────────────────
+let editorPath='';
+async function openEditor(name){
+  const path = CURRENT_PATH.replace(/\/$/,'') + '/' + name;
+  editorPath = path;
+  document.getElementById('editor-title').textContent = 'Edit File';
+  document.getElementById('editor-fname').textContent = name;
+  document.getElementById('editor-textarea').value = 'Loading…';
+  document.getElementById('editor-status').textContent = '';
+  openModal('editor-overlay');
+  try{
+    const res = await fetch('/api/read?path='+encodeURIComponent(path.replace(/^\//,'')));
+    const d   = await res.json();
+    if(!res.ok) throw new Error(d.error||'Cannot read');
+    document.getElementById('editor-textarea').value = d.content;
+    document.getElementById('editor-status').textContent = 'Loaded · '+d.content.length+' chars';
+  } catch(e){
+    document.getElementById('editor-textarea').value = '';
+    document.getElementById('editor-status').textContent = '⚠ '+e.message;
+  }
+}
+async function saveEditor(){
+  const content = document.getElementById('editor-textarea').value;
+  document.getElementById('editor-status').textContent = 'Saving…';
+  try{
+    const res = await fetch('/api/save',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({path:editorPath.replace(/^\//,''),content})});
+    const d = await res.json();
+    if(!res.ok) throw new Error(d.error||'Save failed');
+    document.getElementById('editor-status').textContent = '✓ Saved · '+new Date().toLocaleTimeString();
+    showToast('File saved');
+  } catch(e){
+    document.getElementById('editor-status').textContent = '⚠ '+e.message;
+    showToast(e.message,'error');
+  }
+}
+function closeEditor(){ closeModal('editor-overlay'); }
+document.getElementById('editor-textarea').addEventListener('keydown', e=>{
+  if((e.ctrlKey||e.metaKey)&&e.key==='s'){ e.preventDefault(); saveEditor(); }
+  if(e.key==='Tab'){ e.preventDefault(); const t=e.target; const s=t.selectionStart; t.value=t.value.substring(0,s)+'    '+t.value.substring(t.selectionEnd); t.selectionStart=t.selectionEnd=s+4; }
+});
+
+// ── ZIP ───────────────────────────────────────────────────────────────────────
+function showZipSpinner(msg){ document.getElementById('zip-msg').textContent=msg; document.getElementById('zip-overlay').classList.add('open'); }
+function hideZipSpinner(){ document.getElementById('zip-overlay').classList.remove('open'); }
+
+// Zip single item from action button
+async function doZipItem(name){
+  showZipSpinner('Zipping "'+name+'"…');
+  try{
+    const res=await fetch('/api/zip',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({path:CURRENT_PATH,names:[name]})});
+    const d=await res.json();
+    hideZipSpinner();
+    if(!res.ok) throw new Error(d.error||'Zip failed');
+    showToast('Created '+d.name);
+    setTimeout(()=>location.reload(), 700);
+  } catch(e){ hideZipSpinner(); showToast(e.message,'error'); }
+}
+
+// Unzip from action button
+async function doUnzip(name){
+  showZipSpinner('Extracting "'+name+'"…');
+  try{
+    const res=await fetch('/api/unzip',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({path:CURRENT_PATH,name})});
+    const d=await res.json();
+    hideZipSpinner();
+    if(!res.ok) throw new Error(d.error||'Unzip failed');
+    showToast('Extracted to "'+d.dest+'"');
+    setTimeout(()=>location.reload(), 700);
+  } catch(e){ hideZipSpinner(); showToast(e.message,'error'); }
+}
+
+// Zip multiple selected items
+function zipSelected(){
+  const names=[...document.querySelectorAll('.zip-checkbox:checked')].map(cb=>cb.dataset.name);
+  if(!names.length){ showToast('Check items to zip first','error'); return; }
+  doZipItem(names[0]); // re-uses doZipItem which sends array
+  // for multi: override
+  (async()=>{
+    showZipSpinner('Zipping '+names.length+' items…');
+    try{
+      const res=await fetch('/api/zip',{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({path:CURRENT_PATH,names})});
+      const d=await res.json();
+      hideZipSpinner();
+      if(!res.ok) throw new Error(d.error||'Zip failed');
+      showToast('Created '+d.name); setTimeout(()=>location.reload(),700);
+    } catch(e){ hideZipSpinner(); showToast(e.message,'error'); }
+  })();
+}
+
+// ── Deep Search ───────────────────────────────────────────────────────────────
+let searchTimeout;
+function openSearchPanel(){
+  document.getElementById('search-panel').classList.add('open');
+  setTimeout(()=>document.getElementById('panel-search').focus(), 100);
+}
+function closeSearchPanel(){ document.getElementById('search-panel').classList.remove('open'); }
+document.getElementById('panel-search').addEventListener('input', function(){
+  clearTimeout(searchTimeout);
+  const q=this.value.trim();
+  if(q.length<2){ document.getElementById('search-results').innerHTML='<div class="search-empty">Type at least 2 characters</div>'; return; }
+  document.getElementById('search-results').innerHTML='<div class="search-empty">Searching…</div>';
+  searchTimeout=setTimeout(()=>runSearch(q), 350);
+});
+async function runSearch(q){
+  try{
+    const res=await fetch('/api/search?q='+encodeURIComponent(q)+'&path='+encodeURIComponent(CURRENT_PATH));
+    const d=await res.json();
+    if(!res.ok) throw new Error(d.error||'Search failed');
+    const results=d.results;
+    if(!results.length){ document.getElementById('search-results').innerHTML='<div class="search-empty">No results for "'+q+'"</div>'; return; }
+    const html=results.map(r=>`
+      <a class="search-result-item" href="${escHtml(r.url)}">
+        <span class="material-icons-round" style="color:${r.color}">${r.icon}</span>
+        <div class="sr-info">
+          <div class="sr-name">${escHtml(r.name)}</div>
+          <div class="sr-path">${escHtml(r.path||'/')}</div>
+        </div>
+        ${r.size?`<span style="font-size:.7rem;color:var(--muted);font-family:'Space Mono',monospace">${r.size}</span>`:''}
+      </a>`).join('');
+    document.getElementById('search-results').innerHTML=html+'<div style="padding:10px 10px 4px;font-size:.72rem;color:var(--muted)">${d.count} result(s)</div>';
+  } catch(e){
+    document.getElementById('search-results').innerHTML='<div class="search-empty">Error: '+e.message+'</div>';
+  }
+}
+
+// ── URL Fetch (clipboard share) ───────────────────────────────────────────────
+function openFetchUrl(){
+  document.getElementById('fetch-url-input').value='';
+  document.getElementById('fetch-status').textContent='';
+  document.getElementById('fetch-btn').disabled=false;
+  openModal('fetch-overlay');
+  setTimeout(()=>document.getElementById('fetch-url-input').focus(), 80);
+}
+async function doFetchUrl(){
+  const url=document.getElementById('fetch-url-input').value.trim();
+  if(!url){ showToast('Enter a URL first','error'); return; }
+  document.getElementById('fetch-status').textContent='Downloading…';
+  document.getElementById('fetch-btn').disabled=true;
+  try{
+    const res=await fetch('/api/fetch-url',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({path:CURRENT_PATH,url})});
+    const d=await res.json();
+    if(!res.ok) throw new Error(d.error||'Download failed');
+    document.getElementById('fetch-status').textContent='✓ Saved as '+d.name+' ('+d.size+')';
+    showToast('Downloaded '+d.name);
+    setTimeout(()=>{ closeModal('fetch-overlay'); location.reload(); }, 1000);
+  } catch(e){
+    document.getElementById('fetch-status').textContent='⚠ '+e.message;
+    document.getElementById('fetch-btn').disabled=false;
+    showToast(e.message,'error');
+  }
+}
+
+// ── Utils ─────────────────────────────────────────────────────────────────────
+function escHtml(s){ const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+
+document.addEventListener('keydown', e=>{
+  if(e.key==='Escape'){
+    ['rename-overlay','delete-overlay','mkdir-overlay','editor-overlay','fetch-overlay'].forEach(closeModal);
+    closeSearchPanel();
+  }
+  if((e.ctrlKey||e.metaKey)&&e.key==='k'){ e.preventDefault(); openSearchPanel(); }
 });
 </script>
 </body>
