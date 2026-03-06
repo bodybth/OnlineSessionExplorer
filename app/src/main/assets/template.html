@@ -68,6 +68,15 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .action-btn:hover{background:var(--accent);border-color:var(--accent);color:#fff}
 .action-btn.del:hover{background:#c62828;border-color:#c62828;color:#fff}
 .action-btn.edit:hover{background:#00838f;border-color:#00838f;color:#fff}
+/* ── Selection mode ── */
+.zip-checkbox{display:none;width:18px;height:18px;flex-shrink:0;accent-color:var(--accent);cursor:pointer}
+body.select-mode .zip-checkbox{display:block}
+body.select-mode .item-actions{display:none!important}
+body.select-mode .card:hover .item-actions,body.select-mode .list-item:hover .item-actions{display:none!important}
+body.select-mode .card{cursor:pointer}
+body.select-mode .list-item{cursor:pointer}
+.card.selected,.list-item.selected{border-color:var(--accent)!important;background:rgba(124,106,247,.1)!important}
+#btn-select.active{background:var(--accent);color:#fff;border-color:var(--accent)}
 /* ── Upload zone ── */
 .upload-zone{margin:0 20px 18px;border:2px dashed var(--border);border-radius:var(--radius);padding:22px 24px;text-align:center;color:var(--muted);font-size:.84rem;cursor:pointer;transition:border-color .2s,background .2s;display:none}
 .upload-zone.visible{display:block}
@@ -192,8 +201,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   <button class="tool-btn" onclick="openFetchUrl()" title="Download from URL">
     <span class="material-icons-round">content_paste</span> From URL
   </button>
-  <button class="tool-btn" onclick="zipSelected()" title="Zip checked items">
-    <span class="material-icons-round">archive</span> Zip Selection
+  <button class="tool-btn" id="btn-select" onclick="toggleSelectMode()" title="Select items">
+    <span class="material-icons-round">check_box</span> Select
+  </button>
+  <button class="tool-btn" id="btn-zip-sel" onclick="zipSelected()" title="Zip selected items" style="display:none">
+    <span class="material-icons-round">archive</span> Zip Selected
   </button>
   <select class="sort-select" id="sort-sel" onchange="sortItems()">
     <option value="name-asc">Name A→Z</option>
@@ -576,21 +588,46 @@ async function doUnzip(name){
   } catch(e){ hideZipSpinner(); showToast(e.message,'error'); }
 }
 
+// ── Selection mode ────────────────────────────────────────────────────────────
+let selectMode = false;
+function toggleSelectMode(){
+  selectMode = !selectMode;
+  document.body.classList.toggle('select-mode', selectMode);
+  document.getElementById('btn-select').classList.toggle('active', selectMode);
+  document.getElementById('btn-zip-sel').style.display = selectMode ? '' : 'none';
+  if (!selectMode) {
+    // deselect all
+    document.querySelectorAll('.zip-checkbox').forEach(cb => { cb.checked = false; });
+    document.querySelectorAll('.card.selected,.list-item.selected').forEach(el => el.classList.remove('selected'));
+  }
+}
+
+// Clicking a card/list-item in select mode toggles its checkbox
+document.addEventListener('click', function(e){
+  if (!selectMode) return;
+  const item = e.target.closest('.card[data-name],.list-item[data-name]');
+  if (!item || item.dataset.name === '..') return;
+  // Don't intercept clicks on the checkbox itself
+  if (e.target.classList.contains('zip-checkbox')) return;
+  e.preventDefault();
+  const cb = item.querySelector('.zip-checkbox');
+  if (cb) { cb.checked = !cb.checked; item.classList.toggle('selected', cb.checked); }
+}, true);
+
 // Zip multiple selected items
 function zipSelected(){
-  const names=[...document.querySelectorAll('.zip-checkbox:checked')].map(cb=>cb.dataset.name);
-  if(!names.length){ showToast('Check items to zip first','error'); return; }
-  doZipItem(names[0]); // re-uses doZipItem which sends array
-  // for multi: override
+  const checked = [...document.querySelectorAll('.zip-checkbox:checked')];
+  const names = checked.map(cb => cb.dataset.name);
+  if (!names.length){ showToast('Tap items to select them first','error'); return; }
   (async()=>{
-    showZipSpinner('Zipping '+names.length+' items…');
+    showZipSpinner('Zipping '+names.length+' item'+(names.length>1?'s':'')+'…');
     try{
       const res=await fetch('/api/zip',{method:'POST',headers:{'Content-Type':'application/json'},
         body:JSON.stringify({path:CURRENT_PATH,names})});
       const d=await res.json();
       hideZipSpinner();
       if(!res.ok) throw new Error(d.error||'Zip failed');
-      showToast('Created '+d.name); setTimeout(()=>location.reload(),700);
+      showToast('Created '+d.name); toggleSelectMode(); setTimeout(()=>location.reload(),700);
     } catch(e){ hideZipSpinner(); showToast(e.message,'error'); }
   })();
 }

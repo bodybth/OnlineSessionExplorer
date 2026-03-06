@@ -16,10 +16,10 @@
   .logo span{color:var(--accent)}
   .sub{text-align:center;font-size:.8rem;color:var(--muted);margin-bottom:28px}
   .field{position:relative;margin-bottom:14px}
-  .field .material-icons-round{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:18px;pointer-events:none}
+  .field .material-icons-round:not(.eye-icon){position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:18px;pointer-events:none}
   .field input{width:100%;padding:11px 42px 11px 42px;background:#0d0d0f;border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:.92rem;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s}
   .field input:focus{border-color:var(--accent)}
-  .eye-btn{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);cursor:pointer;display:flex;align-items:center;padding:0}
+  .eye-btn{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);cursor:pointer;display:flex;align-items:center;padding:4px;z-index:2}
   .eye-btn:hover{color:var(--text)}
   .btn-login{width:100%;padding:12px;background:var(--accent);color:#fff;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:.95rem;font-weight:600;cursor:pointer;transition:filter .15s;margin-top:4px}
   .btn-login:hover{filter:brightness(1.15)}
@@ -34,10 +34,10 @@
   __ERROR_BLOCK__
   <form method="POST" action="/login">
     <div class="field">
-      <span class="material-icons-round">lock</span>
+      <span class="material-icons-round" style="position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:18px;pointer-events:none">lock</span>
       <input type="password" id="pwd" name="password" placeholder="Password" autofocus>
       <button type="button" class="eye-btn" onclick="t()">
-        <span class="material-icons-round" id="eye" style="font-size:18px">visibility</span>
+        <span class="material-icons-round eye-icon" id="eye" style="font-size:18px">visibility</span>
       </button>
     </div>
     <button type="submit" class="btn-login">Unlock</button>

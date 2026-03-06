@@ -266,6 +266,7 @@ class FileServer(
             sb.append("""<div class="card" data-name=".." data-size="-1" data-date="0"><a href="$parentUrl"><div class="icon" style="color:#fbc02d"><span class="material-icons-round">arrow_back</span></div><div class="name">..</div><div class="meta">Go up</div></a></div>""")
         for (item in items) {
             sb.append("""<div class="card" data-name="${escHtml(item.name.lowercase())}" data-size="${item.size}" data-date="${item.mtime}">
+              <input type="checkbox" class="zip-checkbox" data-name="${escHtml(item.name)}" onclick="event.stopPropagation();this.closest('.card').classList.toggle('selected',this.checked)">
               <a href="${escHtml(item.url)}">
                 <div class="icon" style="color:${item.meta.color}"><span class="material-icons-round">${item.meta.icon}</span></div>
                 <div class="name" title="${escHtml(item.name)}">${escHtml(item.name)}</div>
@@ -286,6 +287,7 @@ class FileServer(
             sb.append("""<div class="list-item" data-name=".." data-size="-1" data-date="0"><a href="$parentUrl"><div class="icon" style="color:#fbc02d"><span class="material-icons-round">arrow_back</span></div><div class="info"><div class="fname">..</div><div class="fmeta">Parent folder</div></div></a></div>""")
         for (item in items) {
             sb.append("""<div class="list-item" data-name="${escHtml(item.name.lowercase())}" data-size="${item.size}" data-date="${item.mtime}">
+              <input type="checkbox" class="zip-checkbox" data-name="${escHtml(item.name)}" onclick="event.stopPropagation();this.closest('.list-item').classList.toggle('selected',this.checked)">
               <a href="${escHtml(item.url)}"><div class="icon" style="color:${item.meta.color}"><span class="material-icons-round">${item.meta.icon}</span></div>
                 <div class="info"><div class="fname" title="${escHtml(item.name)}">${escHtml(item.name)}</div><div class="fmeta">${item.meta.label} · ${item.modified}</div></div>
               </a>
