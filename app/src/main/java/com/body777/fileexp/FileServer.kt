@@ -151,7 +151,7 @@ class FileServer(
                 return errorResp(Status.RANGE_NOT_SATISFIABLE, "Range Not Satisfiable")
             val len  = end - start + 1
             val fis  = FileInputStream(file).also { it.skip(start) }
-            val resp = Response(Status.PARTIAL_CONTENT, mime, fis.buffered(CHUNK_SIZE), len)
+            val resp = newFixedLengthResponse(Status.PARTIAL_CONTENT, mime, fis.buffered(CHUNK_SIZE), len)
             resp.addHeader("Content-Range",  "bytes $start-$end/$size")
             resp.addHeader("Content-Length", len.toString())
             resp.addHeader("Accept-Ranges",  "bytes")
@@ -162,7 +162,7 @@ class FileServer(
 
         // ── Full file with chunked buffered stream ─────────────────────────────
         val fis  = FileInputStream(file).buffered(CHUNK_SIZE)
-        val resp = Response(Status.OK, mime, fis, size)
+        val resp = newFixedLengthResponse(Status.OK, mime, fis, size)
         resp.addHeader("Content-Length", size.toString())
         resp.addHeader("Accept-Ranges",  "bytes")
         resp.addHeader("ETag",           etag)
@@ -518,11 +518,14 @@ class FileServer(
         return if (t.absolutePath.startsWith(root.absolutePath)) t else null
     }
 
-    private fun readJsonBody(session: IHTTPSession): JSONObject? = try {
-        val body = HashMap<String, String>()
-        session.parseBody(body)
-        JSONObject(body["postData"] ?: return null)
-    } catch (_: Exception) { null }
+    private fun readJsonBody(session: IHTTPSession): JSONObject? {
+        return try {
+            val body = HashMap<String, String>()
+            session.parseBody(body)
+            val postData = body["postData"] ?: return null
+            JSONObject(postData)
+        } catch (_: Exception) { null }
+    }
 
     private fun loadAsset(name: String): String {
         val cached = assetCache[name]
@@ -556,7 +559,7 @@ class FileServer(
         return "%.1f PB".format(n)
     }
 
-    private fun getMimeType(name: String) = when (name.substringAfterLast('.','x').lowercase()) {
+    private fun getMimeType(name: String) = when (name.substringAfterLast('.', "x").lowercase()) {
         "html","htm"->"text/html";"css"->"text/css";"js"->"application/javascript"
         "json"->"application/json";"xml"->"text/xml"
         "txt","md","log","sh","py","kt","java","cpp","c","h","rs","go","rb","php","sql","env","toml","yaml","yml","ini","cfg","conf","gradle","properties","csv"->"text/plain"
@@ -570,7 +573,7 @@ class FileServer(
 
     private fun fileMeta(name: String, isDir: Boolean): FileMeta {
         if (isDir) return FileMeta("folder","#fbc02d","Folder")
-        return when (name.substringAfterLast('.','x').lowercase()) {
+        return when (name.substringAfterLast('.', "x").lowercase()) {
             "pdf"       ->FileMeta("picture_as_pdf","#e53935","PDF")
             "doc","docx"->FileMeta("description","#1565c0","Word")
             "xls","xlsx"->FileMeta("table_chart","#2e7d32","Excel")
@@ -593,7 +596,7 @@ class FileServer(
             "mp4","mkv","avi","webm"->FileMeta("movie","#c62828","Video")
             "zip","rar","tar","gz","7z"->FileMeta("folder_zip","#ff8f00","Archive")
             "apk"       ->FileMeta("android","#00c853","APK")
-            else        ->FileMeta("insert_drive_file","#78909c", name.substringAfterLast('.','x').uppercase().ifEmpty{"File"})
+            else        ->FileMeta("insert_drive_file","#78909c", name.substringAfterLast('.', "x").uppercase().ifEmpty{"File"})
         }
     }
 
