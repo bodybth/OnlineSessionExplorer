@@ -190,7 +190,7 @@ class ServerService : Service() {
             ks.load(null, pass)
             ks.setKeyEntry("ose", kp.private, pass, arrayOf(cert))
 
-            val kmf = KeyManagerFactory.getInstance("X509", bcProv)
+            val kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm())
             kmf.init(ks, pass)
             val ctx = SSLContext.getInstance("TLS")
             ctx.init(kmf.keyManagers, null, null)
